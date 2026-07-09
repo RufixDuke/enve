@@ -7,6 +7,7 @@ import { validateCommand } from './commands/validate.js';
 import { generateExampleCommand } from './commands/generate-example.js';
 import { hookCommand } from './commands/hook.js';
 import { dashboardCommand } from './commands/dashboard.js';
+import { ciCommand } from './commands/ci.js';
 import pkg from '../../package.json' with { type: 'json' };
 
 const program = new Command();
@@ -24,6 +25,7 @@ program.addCommand(validateCommand);
 program.addCommand(generateExampleCommand);
 program.addCommand(hookCommand);
 program.addCommand(dashboardCommand);
+program.addCommand(ciCommand);
 
 process.on('unhandledRejection', (reason) => {
   console.error('\n  Unexpected error:', reason instanceof Error ? reason.message : reason);
