@@ -183,6 +183,24 @@ describe('scanProject', () => {
     expect(refs.map((r) => r.key)).toEqual(expect.arrayContaining(['PORT', 'DATABASE_URL']));
   });
 
+  it('falls back to regex for TSX/JSX files that acorn cannot parse', async () => {
+    mkdirSync(join(tempDir, 'components'), { recursive: true });
+    writeFileSync(
+      join(tempDir, 'components', 'Card.tsx'),
+      `import React from 'react';
+      type Props = { title: string };
+      export const Card: React.FC<Props> = ({ title }) => {
+        const apiUrl = process.env.API_URL;
+        return <div>{title} {apiUrl}</div>;
+      };`,
+      'utf-8'
+    );
+
+    const refs = await scanProject(tempDir);
+
+    expect(refs.some((r) => r.key === 'API_URL')).toBe(true);
+  });
+
   it('ignores node_modules and dist', async () => {
     writeSrc('src/app.ts', 'const port = process.env.PORT;');
     mkdirSync(join(tempDir, 'node_modules'), { recursive: true });

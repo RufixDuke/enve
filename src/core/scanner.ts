@@ -51,7 +51,9 @@ export async function scanFile(filePath: string): Promise<EnvReference[]> {
       locations: true,
     });
   } catch {
-    return references;
+    // If acorn can't parse the file (e.g. TSX/JSX or TypeScript-specific syntax),
+    // fall back to a regex-based scan so we don't miss obvious process.env uses.
+    return extractReferencesWithRegex(content, filePath);
   }
 
   fullAncestor(ast as any, (node: any, _state: any, ancestors: any[]) => {
@@ -169,6 +171,53 @@ function extractDestructuredEnvReferences(
         content
       );
       references.push(...nested);
+    }
+  }
+
+  return references;
+}
+
+function extractReferencesWithRegex(content: string, filePath: string): EnvReference[] {
+  const references: EnvReference[] = [];
+  const seen = new Set<string>();
+
+  const addRef = (key: string, index: number) => {
+    if (seen.has(key)) return;
+    seen.add(key);
+
+    const line = content.slice(0, index).split('\n').length;
+    const dummyNode = { loc: { start: { line, column: 0 } } };
+    references.push(
+      createReference(key, filePath, dummyNode as any, content, { hasFallback: false })
+    );
+  };
+
+  // process.env.X or import.meta.env.X
+  const memberRe = /(?:process|import\.meta)\.env\.([A-Za-z_$][A-Za-z0-9_$]*)/g;
+  let match: RegExpExecArray | null;
+  while ((match = memberRe.exec(content)) !== null) {
+    addRef(match[1], match.index);
+  }
+
+  // process.env['X'] / process.env["X"] / process.env[`X`]
+  const bracketRe = /(?:process|import\.meta)\.env\[(?:'([^']+)'|"([^"]+)"|`([^`]+)`)\]/g;
+  while ((match = bracketRe.exec(content)) !== null) {
+    const key = match[1] ?? match[2] ?? match[3];
+    if (key) addRef(key, match.index);
+  }
+
+  // const { X, Y: y, Z = 'd' } = process.env[ || {}]
+  const destructRe =
+    /(?:const|let|var)\s*\{\s*([^}]+)\s*\}\s*=\s*(?:process\.env|import\.meta\.env)(?:\s*(?:\|\||\?\?)\s*\{[^}]*\})?/g;
+  while ((match = destructRe.exec(content)) !== null) {
+    const props = match[1].split(',');
+    for (const prop of props) {
+      const trimmed = prop.trim();
+      if (!trimmed) continue;
+      const keyMatch = trimmed.match(/^([A-Za-z_$][A-Za-z0-9_$]*)/);
+      if (keyMatch) {
+        addRef(keyMatch[1], match.index);
+      }
     }
   }
 
