@@ -1,4 +1,4 @@
-import { Terminal, ShieldCheck, MagnifyingGlass, Trash, FilePlus, Gauge } from '@phosphor-icons/react';
+import { Terminal, ShieldCheck, MagnifyingGlass, Trash, FilePlus, Gauge, Wrench, Files, Users, ClockCounterClockwise, Globe } from '@phosphor-icons/react';
 
 interface FeatureProps {
   icon: React.ReactNode;
@@ -23,7 +23,7 @@ export function Features() {
     {
       icon: <MagnifyingGlass size={22} weight="duotone" />,
       title: 'Scan everything',
-      description: 'Finds .env files across your project and maps every process.env reference in your source code.',
+      description: 'Finds .env files across your project and maps env references in JS, TS, Python, Go, Ruby, and Rust.',
     },
     {
       icon: <ShieldCheck size={22} weight="duotone" />,
@@ -50,6 +50,31 @@ export function Features() {
       title: 'Interactive dashboard',
       description: 'Run `enve dashboard` to see every tracked project, its health score, and top issues at a glance.',
     },
+    {
+      icon: <Wrench size={22} weight="duotone" />,
+      title: 'Auto-fix',
+      description: 'One command cleans gitignore, moves secrets, removes unused variables, and updates .env.example.',
+    },
+    {
+      icon: <Files size={22} weight="duotone" />,
+      title: 'Generate docs',
+      description: 'Run `enve docs` to create an up-to-date ENV.md with variables, sources, and known issues.',
+    },
+    {
+      icon: <Users size={22} weight="duotone" />,
+      title: 'Team sync',
+      description: 'Push and pull `.env.example` through a shared directory so everyone stays in sync.',
+    },
+    {
+      icon: <ClockCounterClockwise size={22} weight="duotone" />,
+      title: 'History & audit',
+      description: 'Track env health scores over time and spot regressions with `enve history --graph`.',
+    },
+    {
+      icon: <Globe size={22} weight="duotone" />,
+      title: 'Multi-language',
+      description: 'Detects env usage in Python, Go, Ruby, and Rust projects — not just Node.js.',
+    },
   ];
 
   return (
@@ -60,7 +85,7 @@ export function Features() {
           Built for the ways env files actually break
         </h2>
         <p className="text-lg text-muted">
-          Six focused checks that catch the mistakes that slip into production.
+          Focused checks and workflow tools that catch env mistakes before they slip into production.
         </p>
       </div>
 
