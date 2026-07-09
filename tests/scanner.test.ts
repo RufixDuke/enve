@@ -55,6 +55,22 @@ describe('scanFile', () => {
     expect(refs.map((r) => r.key)).toEqual(expect.arrayContaining(['PORT', 'HOST']));
   });
 
+  it('detects renamed destructuring from process.env', async () => {
+    const path = writeSrc('src/app.ts', 'const { PORT: port, HOST: host } = process.env;');
+    const refs = await scanFile(path);
+
+    expect(refs).toHaveLength(2);
+    expect(refs.map((r) => r.key)).toEqual(expect.arrayContaining(['PORT', 'HOST']));
+  });
+
+  it('detects destructuring from process.env with fallback object', async () => {
+    const path = writeSrc('src/app.ts', "const { PORT } = process.env || {};");
+    const refs = await scanFile(path);
+
+    expect(refs).toHaveLength(1);
+    expect(refs[0]).toMatchObject({ key: 'PORT', hasFallback: false });
+  });
+
   it('detects nested destructuring from process', async () => {
     const path = writeSrc('src/app.ts', 'const { env: { PORT } } = process;');
     const refs = await scanFile(path);

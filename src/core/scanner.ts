@@ -138,14 +138,18 @@ function extractDestructuredEnvReferences(
 
     if (prop.type !== 'Property') continue;
 
-    if (prop.value?.type === 'Identifier') {
+    if (prop.value?.type === 'Identifier' && prop.key?.type === 'Identifier') {
+      // Shorthand: const { MY_VAR } = process.env
+      // Renamed:   const { MY_VAR: myVar } = process.env
       references.push(
-        createReference(prop.value.name, filePath, prop.value, content, { hasFallback: false })
+        createReference(prop.key.name, filePath, prop.value, content, { hasFallback: false })
       );
     }
 
-    if (prop.value?.type === 'AssignmentPattern' && prop.value.left?.type === 'Identifier') {
-      const key = prop.value.left.name;
+    if (prop.value?.type === 'AssignmentPattern' && prop.value.left?.type === 'Identifier' && prop.key?.type === 'Identifier') {
+      // Shorthand with default: const { MY_VAR = 'x' } = process.env
+      // Renamed with default:   const { MY_VAR: myVar = 'x' } = process.env
+      const key = prop.key.name;
       const fallbackValue = expressionToString(prop.value.right);
       references.push(
         createReference(key, filePath, prop.value.left, content, {
@@ -178,12 +182,12 @@ function isEnvDestructuringPattern(node: any, ancestors: any[]): boolean {
 
   // const { X } = process.env
   if (parent.type === 'VariableDeclarator' && parent.id === node) {
-    return isProcessEnvNode(parent.init) || isProcessNode(parent.init);
+    return isEnvSource(parent.init);
   }
 
   // const { X = 'd' } = process.env (AssignmentPattern wrapping ObjectPattern)
   if (parent.type === 'AssignmentPattern' && parent.left === node) {
-    return isProcessEnvNode(parent.right) || isProcessNode(parent.right);
+    return isEnvSource(parent.right);
   }
 
   // const { env: { X } } = process
@@ -212,6 +216,26 @@ function isProcessEnvNode(node: any): boolean {
     node.property?.name === 'env'
   ) {
     return true;
+  }
+
+  return false;
+}
+
+function isEnvSource(node: any): boolean {
+  if (isProcessEnvNode(node) || isProcessNode(node)) return true;
+
+  // const { X } = process.env || {}
+  // const { X } = process.env ?? {}
+  if (
+    node?.type === 'LogicalExpression' &&
+    (node.operator === '||' || node.operator === '??')
+  ) {
+    return isEnvSource(node.left) || isEnvSource(node.right);
+  }
+
+  // const { X } = condition ? process.env : {}
+  if (node?.type === 'ConditionalExpression') {
+    return isEnvSource(node.consequent) || isEnvSource(node.alternate);
   }
 
   return false;
