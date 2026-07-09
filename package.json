@@ -1,10 +1,10 @@
 {
   "name": "enve-doctor",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Environment Variable Doctor — scan, validate, and protect your env files",
   "main": "dist/cli.mjs",
   "bin": {
-    "enve": "./dist/cli.mjs"
+    "enve": "dist/cli.mjs"
   },
   "repository": {
     "type": "git",
