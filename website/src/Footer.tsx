@@ -12,14 +12,14 @@ export function Footer() {
 
           <div className="flex items-center gap-6">
             <a
-              href="https://github.com/abdul-qudus/enve"
+              href="https://github.com/RufixDuke/enve"
               className="inline-flex items-center gap-2 text-sm text-muted transition-colors hover:text-ink"
             >
               <GithubLogo size={18} />
               GitHub
             </a>
             <a
-              href="https://www.npmjs.com/package/enve-cli"
+              href="https://www.npmjs.com/package/enve-doctor"
               className="inline-flex items-center gap-2 text-sm text-muted transition-colors hover:text-ink"
             >
               <Package size={18} />

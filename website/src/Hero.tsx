@@ -31,7 +31,7 @@ export function Hero() {
               <ArrowRight size={18} weight="bold" />
             </a>
             <a
-              href="https://www.npmjs.com/package/enve-cli"
+              href="https://www.npmjs.com/package/enve-doctor"
               className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-white px-6 py-3 text-ink transition-all hover:border-border-strong active:scale-[0.98]"
             >
               View on npm
@@ -39,10 +39,10 @@ export function Hero() {
           </div>
 
           <div className="mt-8 flex items-center gap-3">
-            <code className="code-pill text-ink">npm install -g enve-cli</code>
+            <code className="code-pill text-ink">npm install -g enve-doctor</code>
             <button
               className="text-subtle transition-colors hover:text-ink"
-              onClick={() => navigator.clipboard.writeText('npm install -g enve-cli')}
+              onClick={() => navigator.clipboard.writeText('npm install -g enve-doctor')}
               aria-label="Copy install command"
             >
               <Copy size={18} />

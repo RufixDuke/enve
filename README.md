@@ -2,7 +2,7 @@
 
 > Environment Variable Doctor — scan, validate, and protect your `.env` files.
 
-[![npm version](https://img.shields.io/npm/v/enve-cli.svg)](https://www.npmjs.com/package/enve-cli)
+[![npm version](https://img.shields.io/npm/v/enve-doctor.svg)](https://www.npmjs.com/package/enve-doctor)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 `enve` is a developer-friendly CLI that continuously monitors your projects for environment-variable mistakes: missing variables, unused secrets, values that don't match expected formats, `.env` files not in `.gitignore`, and more. It also ships an interactive terminal dashboard so you can see the health of every tracked project at a glance.
@@ -45,7 +45,7 @@ Environment variables are easy to get wrong:
 ## Installation
 
 ```bash
-npm install -g enve-cli
+npm install -g enve-doctor
 ```
 
 Requires Node.js 18 or later.

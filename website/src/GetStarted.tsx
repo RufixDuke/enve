@@ -18,7 +18,7 @@ export function GetStarted() {
                 <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/10 font-mono text-sm">1</span>
                 <div>
                   <p className="font-medium">Install globally</p>
-                  <p className="text-sm text-white/60">Use npm, pnpm, or yarn to install enve-cli.</p>
+                  <p className="text-sm text-white/60">Use npm, pnpm, or yarn to install enve-doctor.</p>
                 </div>
               </div>
 
@@ -42,7 +42,7 @@ export function GetStarted() {
 
           <TerminalWindow title="install">
             <div className="space-y-1">
-              <div className="text-white/40">$ npm install -g enve-cli</div>
+              <div className="text-white/40">$ npm install -g enve-doctor</div>
               <div className="text-white/90">added 1 package in 340ms</div>
               <div className="text-white/90"></div>
               <div className="text-white/40">$ cd my-project && enve doctor</div>

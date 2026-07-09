@@ -162,7 +162,7 @@ export function Dashboard({
           <Text color={colors.muted}><Text bold>r</Text> refresh</Text>
           <Text color={colors.muted}><Text bold>q</Text> quit</Text>
         </Box>
-        <Text color={colors.subtle}>enve-cli v{version}</Text>
+        <Text color={colors.subtle}>enve-doctor v{version}</Text>
       </Box>
     </Box>
   );

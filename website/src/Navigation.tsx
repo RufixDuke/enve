@@ -27,7 +27,7 @@ export function Navigation() {
             </a>
           ))}
           <a
-            href="https://www.npmjs.com/package/enve-cli"
+            href="https://www.npmjs.com/package/enve-doctor"
             className="rounded-lg bg-ink px-4 py-2 text-sm text-white transition-colors hover:bg-ink/90"
           >
             Install
@@ -57,7 +57,7 @@ export function Navigation() {
               </a>
             ))}
             <a
-              href="https://www.npmjs.com/package/enve-cli"
+              href="https://www.npmjs.com/package/enve-doctor"
               className="rounded-lg bg-ink px-4 py-2 text-center text-sm text-white"
             >
               Install
