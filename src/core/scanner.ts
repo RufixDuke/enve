@@ -1,11 +1,12 @@
 import fg from 'fast-glob';
 import { readFile } from 'node:fs/promises';
+import { extname } from 'node:path';
 import { Parser } from 'acorn';
 import { fullAncestor } from 'acorn-walk';
 import type { EnvReference, ScannerOptions } from '../types/index.js';
 
 const DEFAULT_INCLUDE = [
-  '**/*.{js,ts,jsx,tsx,mjs,cjs}',
+  '**/*.{js,ts,jsx,tsx,mjs,cjs,py,go,rb,rs}',
 ];
 
 const DEFAULT_EXCLUDE = [
@@ -13,6 +14,9 @@ const DEFAULT_EXCLUDE = [
   '**/dist/**',
   '**/build/**',
   '**/.next/**',
+  '**/target/**',
+  '**/__pycache__/**',
+  '**/vendor/**',
 ];
 
 export async function scanProject(
@@ -192,32 +196,75 @@ function extractReferencesWithRegex(content: string, filePath: string): EnvRefer
     );
   };
 
-  // process.env.X or import.meta.env.X
-  const memberRe = /(?:process|import\.meta)\.env\.([A-Za-z_$][A-Za-z0-9_$]*)/g;
-  let match: RegExpExecArray | null;
-  while ((match = memberRe.exec(content)) !== null) {
-    addRef(match[1], match.index);
-  }
+  const ext = extname(filePath);
 
-  // process.env['X'] / process.env["X"] / process.env[`X`]
-  const bracketRe = /(?:process|import\.meta)\.env\[(?:'([^']+)'|"([^"]+)"|`([^`]+)`)\]/g;
-  while ((match = bracketRe.exec(content)) !== null) {
-    const key = match[1] ?? match[2] ?? match[3];
-    if (key) addRef(key, match.index);
-  }
+  // JavaScript / TypeScript
+  if (['.js', '.ts', '.jsx', '.tsx', '.mjs', '.cjs'].includes(ext)) {
+    // process.env.X or import.meta.env.X
+    const memberRe = /(?:process|import\.meta)\.env\.([A-Za-z_$][A-Za-z0-9_$]*)/g;
+    let match: RegExpExecArray | null;
+    while ((match = memberRe.exec(content)) !== null) {
+      addRef(match[1], match.index);
+    }
 
-  // const { X, Y: y, Z = 'd' } = process.env[ || {}]
-  const destructRe =
-    /(?:const|let|var)\s*\{\s*([^}]+)\s*\}\s*=\s*(?:process\.env|import\.meta\.env)(?:\s*(?:\|\||\?\?)\s*\{[^}]*\})?/g;
-  while ((match = destructRe.exec(content)) !== null) {
-    const props = match[1].split(',');
-    for (const prop of props) {
-      const trimmed = prop.trim();
-      if (!trimmed) continue;
-      const keyMatch = trimmed.match(/^([A-Za-z_$][A-Za-z0-9_$]*)/);
-      if (keyMatch) {
-        addRef(keyMatch[1], match.index);
+    // process.env['X'] / process.env["X"] / process.env[`X`]
+    const bracketRe = /(?:process|import\.meta)\.env\[(?:'([^']+)'|"([^"]+)"|`([^`]+)`)\]/g;
+    while ((match = bracketRe.exec(content)) !== null) {
+      const key = match[1] ?? match[2] ?? match[3];
+      if (key) addRef(key, match.index);
+    }
+
+    // const { X, Y: y, Z = 'd' } = process.env[ || {}]
+    const destructRe =
+      /(?:const|let|var)\s*\{\s*([^}]+)\s*\}\s*=\s*(?:process\.env|import\.meta\.env)(?:\s*(?:\|\||\?\?)\s*\{[^}]*\})?/g;
+    while ((match = destructRe.exec(content)) !== null) {
+      const props = match[1].split(',');
+      for (const prop of props) {
+        const trimmed = prop.trim();
+        if (!trimmed) continue;
+        const keyMatch = trimmed.match(/^([A-Za-z_$][A-Za-z0-9_$]*)/);
+        if (keyMatch) {
+          addRef(keyMatch[1], match.index);
+        }
       }
+    }
+  }
+
+  // Python
+  if (ext === '.py') {
+    const pythonRe =
+      /(?:os\.environ\.get|os\.environ\[|os\.getenv)\s*\(\s*['"]([^'"]+)['"]\s*\)|os\.environ\[\s*['"]([^'"]+)['"]\s*\]/g;
+    let match: RegExpExecArray | null;
+    while ((match = pythonRe.exec(content)) !== null) {
+      const key = match[1] ?? match[2];
+      if (key) addRef(key, match.index);
+    }
+  }
+
+  // Go
+  if (ext === '.go') {
+    const goRe = /os\.Getenv\s*\(\s*["']([^"']+)["']\s*\)/g;
+    let match: RegExpExecArray | null;
+    while ((match = goRe.exec(content)) !== null) {
+      addRef(match[1], match.index);
+    }
+  }
+
+  // Ruby
+  if (ext === '.rb') {
+    const rubyRe = /ENV\s*\[\s*["']([^"']+)["']\s*\]/g;
+    let match: RegExpExecArray | null;
+    while ((match = rubyRe.exec(content)) !== null) {
+      addRef(match[1], match.index);
+    }
+  }
+
+  // Rust
+  if (ext === '.rs') {
+    const rustRe = /(?:std::)?env::var(?:_os)?\s*\(\s*["']([^"']+)["']\s*\)/g;
+    let match: RegExpExecArray | null;
+    while ((match = rustRe.exec(content)) !== null) {
+      addRef(match[1], match.index);
     }
   }
 

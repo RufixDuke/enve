@@ -24,6 +24,10 @@
   - [`enve hook`](#enve-hook)
   - [`enve dashboard`](#enve-dashboard)
   - [`enve ci`](#enve-ci)
+  - [`enve fix`](#enve-fix)
+  - [`enve docs`](#enve-docs)
+  - [`enve sync`](#enve-sync)
+  - [`enve history`](#enve-history)
 - [How the Score Works](#how-the-score-works)
 - [Tracking Behavior](#tracking-behavior)
 - [Contributing](#contributing)
@@ -188,6 +192,52 @@ Example GitHub Actions step:
 ```yaml
 - name: Check env health
   run: npx enve-doctor ci --fail-on warning
+```
+
+### `enve fix`
+
+Apply safe, auto-fixable corrections.
+
+```bash
+enve fix
+enve fix --yes   # Apply all fixes without prompting
+```
+
+Fixes include:
+
+- Adding `.env`, `.env.local`, and `.env.production` to `.gitignore`
+- Moving secrets from `.env` to `.env.local`
+- Removing unused variables from `.env`
+- Adding missing variables to `.env.example`
+
+### `enve docs`
+
+Generate `ENV.md` documentation from your `.env` files.
+
+```bash
+enve docs
+enve docs --output docs/env.md
+enve docs --overwrite
+```
+
+### `enve sync`
+
+Share `.env.example` with your team through a shared directory.
+
+```bash
+enve sync set-path /path/to/team/shared
+enve sync push
+enve sync pull
+```
+
+### `enve history`
+
+Track env health score over time.
+
+```bash
+enve history
+enve history --graph
+enve history --limit 20
 ```
 
 ---
