@@ -1,6 +1,6 @@
 {
   "name": "enve-doctor",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Environment Variable Doctor — scan, validate, and protect your env files",
   "main": "dist/cli.mjs",
   "bin": {
