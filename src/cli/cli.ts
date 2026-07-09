@@ -7,6 +7,10 @@ import { validateCommand } from './commands/validate.js';
 import { generateExampleCommand } from './commands/generate-example.js';
 import { hookCommand } from './commands/hook.js';
 import { dashboardCommand } from './commands/dashboard.js';
+import { historyCommand } from './commands/history.js';
+import { syncCommand } from './commands/sync.js';
+import { docsCommand } from './commands/docs.js';
+import { fixCommand } from './commands/fix.js';
 import { ciCommand } from './commands/ci.js';
 import pkg from '../../package.json' with { type: 'json' };
 
@@ -26,6 +30,10 @@ program.addCommand(generateExampleCommand);
 program.addCommand(hookCommand);
 program.addCommand(dashboardCommand);
 program.addCommand(ciCommand);
+program.addCommand(fixCommand);
+program.addCommand(docsCommand);
+program.addCommand(syncCommand);
+program.addCommand(historyCommand);
 
 process.on('unhandledRejection', (reason) => {
   console.error('\n  Unexpected error:', reason instanceof Error ? reason.message : reason);

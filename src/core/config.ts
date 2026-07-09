@@ -1,11 +1,13 @@
 import Conf from 'conf';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import type { EnveConfig, TrackedProject } from '../types/index.js';
+import type { EnveConfig, TrackedProject, HistoryEntry } from '../types/index.js';
 
 const DEFAULT_CONFIG: EnveConfig = {
   version: 1,
   projects: [],
+  sync: {},
+  history: [],
 };
 
 function createConfig(): Conf<EnveConfig> {
@@ -58,6 +60,45 @@ export function removeProject(projectPath: string): boolean {
 
   config.set('projects', filtered);
   return true;
+}
+
+export function setSyncPath(path: string): void {
+  const config = createConfig();
+  const sync = config.get('sync', {});
+  sync.path = path;
+  config.set('sync', sync);
+}
+
+export function getSyncPath(): string | undefined {
+  const config = createConfig();
+  return config.get('sync', {}).path;
+}
+
+export function getHistory(projectPath?: string): HistoryEntry[] {
+  const config = createConfig();
+  const history = config.get('history', []);
+  if (!projectPath) return history;
+  return history.filter((entry) => entry.projectPath === projectPath);
+}
+
+export function addHistory(entry: HistoryEntry): void {
+  const config = createConfig();
+  const history = config.get('history', []);
+  history.push(entry);
+
+  // Keep only the last 50 entries per project
+  const byProject = new Map<string, HistoryEntry[]>();
+  for (const h of history) {
+    if (!byProject.has(h.projectPath)) byProject.set(h.projectPath, []);
+    byProject.get(h.projectPath)!.push(h);
+  }
+
+  const trimmed: HistoryEntry[] = [];
+  for (const entries of byProject.values()) {
+    trimmed.push(...entries.slice(-50));
+  }
+
+  config.set('history', trimmed);
 }
 
 async function detectProjectName(projectPath: string): Promise<string> {

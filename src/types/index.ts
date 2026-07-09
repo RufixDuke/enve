@@ -88,10 +88,23 @@ export interface TrackedProject {
   addedAt: string; // ISO date string
 }
 
+/** History snapshot for audit tracking */
+export interface HistoryEntry {
+  projectPath: string;
+  name: string;
+  score: number;
+  grade: Grade;
+  timestamp: string; // ISO date string
+}
+
 /** Enve global configuration */
 export interface EnveConfig {
   version: number;
   projects: TrackedProject[];
+  sync?: {
+    path?: string;
+  };
+  history?: HistoryEntry[];
 }
 
 /** Analysis report for a project */
