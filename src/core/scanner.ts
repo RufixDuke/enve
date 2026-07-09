@@ -5,10 +5,7 @@ import { fullAncestor } from 'acorn-walk';
 import type { EnvReference, ScannerOptions } from '../types/index.js';
 
 const DEFAULT_INCLUDE = [
-  'src/**/*.{js,ts,jsx,tsx}',
-  'lib/**/*.{js,ts}',
-  'pages/**/*.{js,ts,jsx,tsx}',
-  'app/**/*.{js,ts,jsx,tsx}',
+  '**/*.{js,ts,jsx,tsx,mjs,cjs}',
 ];
 
 const DEFAULT_EXCLUDE = [
@@ -16,8 +13,6 @@ const DEFAULT_EXCLUDE = [
   '**/dist/**',
   '**/build/**',
   '**/.next/**',
-  '**/*.test.{js,ts}',
-  '**/*.spec.{js,ts}',
 ];
 
 export async function scanProject(
@@ -25,7 +20,7 @@ export async function scanProject(
   options: ScannerOptions = {}
 ): Promise<EnvReference[]> {
   const include = options.include ?? DEFAULT_INCLUDE;
-  const exclude = options.exclude ?? (options.checkTests ? DEFAULT_EXCLUDE.slice(0, -2) : DEFAULT_EXCLUDE);
+  const exclude = options.exclude ?? DEFAULT_EXCLUDE;
 
   const files = await fg(include, {
     cwd: projectPath,
