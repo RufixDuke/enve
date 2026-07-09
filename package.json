@@ -8,12 +8,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/abdul-qudus/enve.git"
+    "url": "git+https://github.com/RufixDuke/enve.git"
   },
   "bugs": {
-    "url": "https://github.com/abdul-qudus/enve/issues"
+    "url": "https://github.com/RufixDuke/enve/issues"
   },
-  "homepage": "https://abdul-qudus.github.io/enve",
+  "homepage": "https://enve-lac.vercel.app",
   "files": [
     "dist"
   ],
