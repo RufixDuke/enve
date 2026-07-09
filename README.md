@@ -23,6 +23,7 @@
   - [`enve generate-example`](#enve-generate-example)
   - [`enve hook`](#enve-hook)
   - [`enve dashboard`](#enve-dashboard)
+  - [`enve ci`](#enve-ci)
 - [How the Score Works](#how-the-score-works)
 - [Tracking Behavior](#tracking-behavior)
 - [Contributing](#contributing)
@@ -168,6 +169,26 @@ Keyboard shortcuts:
 | `Enter` | Run `enve doctor` for selected project |
 | `r` | Refresh all projects |
 | `q` / `Ctrl+C` | Quit |
+
+### `enve ci`
+
+Non-interactive check designed for CI/CD pipelines.
+
+```bash
+enve ci
+enve ci --fail-on error      # Exit with error code if any errors exist (default)
+enve ci --fail-on warning    # Exit with error code if any warnings or errors exist
+enve ci --fail-on none       # Never fail the pipeline
+enve ci --format json        # Output a JSON report
+enve ci --format junit       # Output a JUnit XML report
+```
+
+Example GitHub Actions step:
+
+```yaml
+- name: Check env health
+  run: npx enve-doctor ci --fail-on warning
+```
 
 ---
 
