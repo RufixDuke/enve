@@ -1,4 +1,4 @@
-import { ArrowRight, Copy } from '@phosphor-icons/react';
+import { ArrowRight, Copy, GithubLogo } from '@phosphor-icons/react';
 import { TerminalWindow } from './Terminal';
 
 export function Hero() {
@@ -35,6 +35,15 @@ export function Hero() {
               className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-white px-6 py-3 text-ink transition-all hover:border-border-strong active:scale-[0.98]"
             >
               View on npm
+            </a>
+            <a
+              href="https://github.com/RufixDuke/enve"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-white px-6 py-3 text-ink transition-all hover:border-border-strong active:scale-[0.98]"
+            >
+              <GithubLogo size={18} weight="bold" />
+              Star on GitHub
             </a>
           </div>
 
