@@ -88,6 +88,56 @@ export function Commands() {
               </>
             }
           />
+
+          <CommandCard
+            command="enve ci --format junit"
+            title="CI/CD ready"
+            description="Run non-interactive checks in your pipeline. Exit codes, JSON, and JUnit output included."
+            output={
+              <>
+                <div className="text-white/40">$ enve ci --fail-on warning</div>
+                <div className="text-white/90"></div>
+                <div className="text-white/90">  Score: 85/100 [ Good ]</div>
+                <div className="text-white/90">  1 errors, 2 warnings</div>
+                <div className="text-error">  ✗ .env is not in .gitignore</div>
+                <div className="text-warning">  ⚠ JWT_SECRET is defined but never used</div>
+              </>
+            }
+          />
+
+          <CommandCard
+            command="enve fix --yes"
+            title="One-command cleanup"
+            description="Apply safe fixes: gitignore entries, secret moves, unused variable removal, and .env.example updates."
+            output={
+              <>
+                <div className="text-white/40">$ enve fix --yes</div>
+                <div className="text-white/90"></div>
+                <div className="text-success">  ✓ Added .env to .gitignore</div>
+                <div className="text-success">  ✓ Moved API_KEY to .env.local</div>
+                <div className="text-success">  ✓ Removed 2 unused variables</div>
+                <div className="text-success">  ✓ Added 3 placeholders to .env.example</div>
+              </>
+            }
+          />
+
+          <CommandCard
+            command="enve docs"
+            title="Auto-generated docs"
+            description="Generate an up-to-date ENV.md with variables, sources, usage status, and current issues."
+            output={
+              <>
+                <div className="text-white/40">$ enve docs --overwrite</div>
+                <div className="text-white/90"></div>
+                <div className="text-white/90">  Generated ENV.md</div>
+                <div className="text-white/90"></div>
+                <div className="text-white/40">  | Variable | Source | Used | Secret |</div>
+                <div className="text-white/40">  | --- | --- | --- | --- |</div>
+                <div className="text-white/90">  | PORT | .env | Yes | No |</div>
+                <div className="text-white/90">  | API_KEY | .env.local | Yes | Yes |</div>
+              </>
+            }
+          />
         </div>
       </div>
     </section>
